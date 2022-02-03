@@ -311,15 +311,13 @@ class _TakeActionState extends State<TakeAction> {
               ),
             ],
           ),
-          floatingActionButton: Container(
-            width: MediaQuery.of(context).size.width * 0.90,
-            height: 100,
-            //alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if(!isCompleted)Row(
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if(!isCompleted)Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Row(
                   children: [
                     Checkbox(
                       value: isCheck,
@@ -341,7 +339,10 @@ class _TakeActionState extends State<TakeAction> {
                     ),
                   ],
                 ),
-                FlatButton(
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: FlatButton(
                   onPressed: () {
                     if(!isCompleted ) {
                       isCheck ?
@@ -369,8 +370,8 @@ class _TakeActionState extends State<TakeAction> {
                       ),
                       borderRadius: BorderRadius.circular(30)),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
