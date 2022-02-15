@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import 'package:ourvoice/assets/ov_icons.dart';
 import 'package:ourvoice/config/palette.dart';
 import 'package:ourvoice/screens/ForgotPassword.dart';
+import 'package:ourvoice/screens/ForgotUsername.dart';
 import 'package:ourvoice/screens/homepage.dart';
 import 'package:ourvoice/screens/profilepage.dart';
 import 'package:ourvoice/screens/signuppage.dart';
@@ -91,17 +92,19 @@ class _LoginPageState extends State<LoginPage> {
                   height: 150.0,
                 ),
                 Container(
-                  height: 38.0,
-                  width: 261.0,
-                  child: Text(
-                    "Welcome",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Open Sans',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32.0,
-                        color: Color(0xFFff862e)),
-                  ),
+                  height: height*0.08,
+                  width: width*0.4,
+                  child:
+                  Image.asset("assets/images/app_heading.png",),
+                  // Text(
+                  //   "Welcome",
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //       fontFamily: 'Open Sans',
+                  //       fontWeight: FontWeight.bold,
+                  //       fontSize: 32.0,
+                  //       color: Color(0xFFff862e)),
+                  // ),
                 ),
                 SizedBox(
                   height: 5.0,
@@ -118,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.black),
                   ),
                 ),
-                count == "" ? Container() : Text("$count Actions Taken"),
+                int.parse(count) < 100 ? Container() : Text("$count Actions Taken"),
                 SizedBox(
                   height: 40.0,
                 ),
@@ -181,7 +184,28 @@ class _LoginPageState extends State<LoginPage> {
                   ]),
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 10.0,
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: InkWell(
+                    child: Text(
+                      'Forgot username?',
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 10.0,
+                        //fontWeight: FontWeight.bold,
+                        //     color: Color(0xff376FDF),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ForgotUsername()));
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
                 ),
                 Container(
                   child: TextFormField(
@@ -385,8 +409,12 @@ class _LoginPageState extends State<LoginPage> {
       if (_userName.text != '' && _password.text != '') {
         print(_userName.text);
         print(_password.text);
+        print("password  =   "+_password.text);
+        String pass = _password.text.replaceAll("#", "%23");
+        print(_password.text);
+        print(pass);
         var uri =
-            'https://vact.tech/wp-json/wp/v2/login?username=${_userName.text}&password=${_password.text}';
+            'https://vact.tech/wp-json/wp/v2/login?username=${_userName.text}&password=${pass}';
         print('uri : ' + uri);
         var response = await post(Uri.parse(uri));
         print('response :' + response.body);

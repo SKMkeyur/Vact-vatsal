@@ -78,6 +78,11 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                 SizedBox(
                   height: 10.0,
                 ),
+                Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text("OTP has been sent to "+widget.email,style: TextStyle(color: Color(0xFFff862e),fontWeight: FontWeight.w600),)
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

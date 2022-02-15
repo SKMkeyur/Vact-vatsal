@@ -17,14 +17,14 @@ class _SubmitScreenState extends State<SubmitScreen> {
   void initState() {
     super.initState();
 
-    // Timer(Duration(seconds: 1), () {
-    //   Navigator.push(
-    //     context,
-    //     new MaterialPageRoute(
-    //       builder: (context) => new LoginPage(),
-    //     ),
-    //   );
-    // });
+    Timer(Duration(seconds: 3), () {
+      Navigator.push(
+        context,
+        new MaterialPageRoute(
+          builder: (context) => new LoginPage(),
+        ),
+      );
+    });
   }
 
   @override
@@ -39,56 +39,67 @@ class _SubmitScreenState extends State<SubmitScreen> {
           elevation: 0,
           automaticallyImplyLeading: false,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.close,
-                size: 30,
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (context) => new LoginPage(),
-                ),
-              ),
-            ),
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.close,
+            //     size: 30,
+            //   ),
+            //   onPressed: () => Navigator.push(
+            //     context,
+            //     new MaterialPageRoute(
+            //       builder: (context) => new LoginPage(),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
-        body: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Image.asset(
-                  'assets/images/icegif.gif',
-                ),
+        body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => new LoginPage(),
               ),
-              SizedBox(
-                height: 30,
-              ),
-              Center(
-                child: Text(
-                  'Welcome to Vact!',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
+            );
+          },
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/images/icegif.gif',
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: Text(
-                  "Now let's go take action!",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+                SizedBox(
+                  height: 30,
+                ),
+                Center(
+                  child: Text(
+                    'Welcome to Vact!',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    "Now let's go take action!",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

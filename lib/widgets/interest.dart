@@ -53,10 +53,12 @@ class _ChangeInterestSelectionState extends State<ChangeInterestSelection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Change Interests',
+                'Interests',
                 style: TextStyle(
+                  color:  Color(0xFFff862e),
                   fontSize: 32,
                   fontWeight: FontWeight.w600,
+
                 ),
               ),
               SizedBox(

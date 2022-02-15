@@ -415,38 +415,74 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                         ),
                                         ListTile(
+
                                           trailing: IconButton(
                                             icon: Icon(
-                                              Icons.close,
-                                              color: Colors.red,
-                                            ),
-                                            onPressed: (){
-                                              setState(() {
-                                                backGroundId = -1;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          leading: IconButton(
-                                            icon: Icon(
-                                                Icons.done,
-                                                color: Colors.green,
+                                              Icons.done,
+                                              color: Colors.green,
 
                                             ),
                                             onPressed: (){
                                               if(backGroundId!=-1){
-                                                  setBackgroundProfile(
-                                                      "",
-                                                      getBackgroundImage(
-                                                          backGroundId));
-                                                  Navigator.pop(context);
-                                                }
-                                              },
+                                                setBackgroundProfile(
+                                                    "",
+                                                    getBackgroundImage(
+                                                        backGroundId));
+                                                Navigator.pop(context);
+                                              }
+                                            },
                                           ),
+                                          leading:
+                                      IconButton(
+                                          icon: Icon(
+                                           Icons.close,
+                                            color: Colors.red,
+                                               ),
+                                          onPressed: (){
+                                          setState(() {
+                                          backGroundId = -1;
+                                         });
+                                          Navigator.pop(context);
+                                         },
+                                         ),
                                           title: Text(
-                                            "Backgrounds"
+                                              "Backgrounds"
                                           ),
                                         )
+
+                                        // ListTile(
+                                        //   trailing: IconButton(
+                                        //     icon: Icon(
+                                        //       Icons.close,
+                                        //       color: Colors.red,
+                                        //     ),
+                                        //     onPressed: (){
+                                        //       setState(() {
+                                        //         backGroundId = -1;
+                                        //       });
+                                        //       Navigator.pop(context);
+                                        //     },
+                                        //   ),
+                                        //   leading: IconButton(
+                                        //     icon: Icon(
+                                        //         Icons.done,
+                                        //         color: Colors.green,
+                                        //
+                                        //     ),
+                                        //     onPressed: (){
+                                        //       if(backGroundId!=-1){
+                                        //           setBackgroundProfile(
+                                        //               "",
+                                        //               getBackgroundImage(
+                                        //                   backGroundId));
+                                        //           Navigator.pop(context);
+                                        //         }
+                                        //       },
+                                        //   ),
+                                        //   title: Text(
+                                        //     "Backgrounds"
+                                        //   ),
+                                        // )
                                       ],
                                     ),
                                   );
@@ -511,18 +547,18 @@ class _ProfilePageState extends State<ProfilePage> {
                               actions: [
                                 TextButton(
                                   onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("No"),
+                                ),
+                                TextButton(
+                                  onPressed: (){
                                     File image = File(profileImage.path);
                                     Navigator.pop(context);
                                     setBackgroundProfile(image.path, "");
 
                                   },
                                   child: Text("Yes"),
-                                ),
-                                TextButton(
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("No"),
                                 ),
                               ],
                             );

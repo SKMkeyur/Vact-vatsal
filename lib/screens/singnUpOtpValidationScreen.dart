@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:ourvoice/constants/colors.dart';
 import 'package:ourvoice/screens/loginpage.dart';
 import 'package:ourvoice/widgets/submit.dart';
 
@@ -44,6 +45,7 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
         ),
       ),
       body: Container(
+        // color: Colors.red,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
           child:SingleChildScrollView(
@@ -75,6 +77,11 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
                       ),
                     )
                   ],
+                ),
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text("OTP has been sent to "+widget.email,style: TextStyle(color: Color(0xFFff862e),fontWeight: FontWeight.w600),)
                 ),
                 TextFormField(
                   controller: _otp,
@@ -142,6 +149,12 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
                           print(_otp.text.toString());
                           if(_otp.text.toString() != null && _otp.text.toString() != ''){
                             callVerifyLoginOtpApi(widget.email,_otp.text);
+                            // Navigator.push(
+                            //   context,
+                            //   new MaterialPageRoute(
+                            //       builder: (context) => new SubmitScreen()
+                            //   ),
+                            // );
                           }else{
                             setState(() {
                               showMessage=true;

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:ourvoice/config/palette.dart';
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _focusNode = FocusNode();
 
-  int filterGroupValue = -1;
+  int filterGroupValue;
 
   int pageNo = 1;
 
@@ -49,25 +49,92 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    callAllPostApi();
-    _scrollController.addListener(() {
-      if(_scrollController.position.atEdge){
-        if(!(_scrollController.position.pixels==0)){
-          if(!isEnd){
-            pageNo+=1;
-            callAllPostApi();
-            setState(() {
-              isLoading = true;
-            });
+    intitialMethod();
+    // callAllPostApi();
+    // _scrollController.addListener(() {
+    //   if(_scrollController.position.atEdge){
+    //     if(!(_scrollController.position.pixels==0)){
+    //       if(!isEnd){
+    //         pageNo+=1;
+    //         callAllPostApi();
+    //         setState(() {
+    //           isLoading = true;
+    //         });
+    //       }
+    //     }
+    //   }
+    // });
+    // _focusNode.unfocus();
+  }
+
+  intitialMethod() async {
+
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      filterGroupValue = (prefs.getInt('filterGroupValue') ?? 1);
+      print(filterGroupValue);
+
+    });
+
+    if(filterGroupValue==0){
+      callMostRecentApi();
+    print(filterGroupValue);
+    }else if(filterGroupValue==1) {
+      callAllPostApi();
+      print(filterGroupValue);
+
+    }else if(filterGroupValue==-1){
+      print(filterGroupValue);
+
+      callAllPostApi();
+      _scrollController.addListener(() {
+        if(_scrollController.position.atEdge){
+          if(!(_scrollController.position.pixels==0)){
+            if(!isEnd){
+              pageNo+=1;
+              callAllPostApi();
+              setState(() {
+                isLoading = true;
+              });
+            }
           }
         }
-      }
-    });
-    _focusNode.unfocus();
+      });
+      _focusNode.unfocus();
+    }else{
+      print(filterGroupValue);
+
+      callAllPostApi();
+      _scrollController.addListener(() {
+        if(_scrollController.position.atEdge){
+          if(!(_scrollController.position.pixels==0)){
+            if(!isEnd){
+              pageNo+=1;
+              callAllPostApi();
+              setState(() {
+                isLoading = true;
+              });
+            }
+          }
+        }
+      });
+      _focusNode.unfocus();
+    }
+
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+    void _loadCounter(phone,identifier) async {
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        prefs.setString(identifier, phone);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -131,16 +198,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               suffixIcon: _search.text.length > 0
                                   ? IconButton(
-                                      icon: Icon(Icons.close),
-                                      onPressed: () => {
-                                        setState(() {
-                                          _search.text = '';
-                                          callAllPostApi();
-                                          _focusNode.unfocus();
-                                        })
-                                      },
-                                      iconSize: 25.0,
-                                    )
+                                icon: Icon(Icons.close),
+                                onPressed: () => {
+                                  setState(() {
+                                    _search.text = '';
+                                    callAllPostApi();
+                                    _focusNode.unfocus();
+                                  })
+                                },
+                                iconSize: 25.0,
+                              )
                                   : SizedBox(),
                             ),
                             onChanged: (val) {},
@@ -193,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     color: Colors.grey.shade200,
                     child:
-                        NotificationListener<OverscrollIndicatorNotification>(
+                    NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowGlow();
                         return true;
@@ -425,13 +492,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Card _buildRow(String id, String name, String postName, String description,
-      String time, String userId) {
+      String time, String userId, bool completed_status) {
     return Card(
       child: Column(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             child: Container(
+
               width: double.infinity,
               child: InkWell (
                 onTap: (){
@@ -592,14 +660,26 @@ class _MyHomePageState extends State<MyHomePage> {
                             left: 5,
                             right: 10,
                           ),
-                          child: SvgPicture.asset(
+                          child:
+                          completed_status==true ?
+                          Icon(FontAwesomeIcons.solidCheckCircle,color: Colors.green,size: 24,)
+                              :
+                          SvgPicture.asset(
                             'assets/images/arrow-right-o.svg',
                             color: PrimaryColor,
                           ),
+                          // SvgPicture.asset(
+                          //   'assets/images/arrow-right-o.svg',
+                          //   color: PrimaryColor,
+                          // ),
                         ),
                       ),
                       TextSpan(
-                        text: 'act'.toUpperCase(),
+                        text:
+                        completed_status==true ?
+                        'DONE'.toUpperCase()
+                            :
+                        'act'.toUpperCase(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -659,47 +739,48 @@ class _MyHomePageState extends State<MyHomePage> {
     List _table = tempList;
     return _table.length > 0
         ? Container(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 5,
-              ),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    primary: false,
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.only(top: 0.0),
-                    itemCount: _table.length,
-                    itemBuilder: (context, index) {
-                      final Report record = _table[index];
-                      //print(record);
-                      return _buildRow(
-                        record.id,
-                        record.name,
-                        record.postName,
-                        record.description,
-                        record.datetime,
-                        record.userId,
-                      );
-                    },
-                  ),
-                  isLoading ? loadingCard(context) : Container(),
-                ],
-              ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 5,
+        ),
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 0.0),
+              itemCount: _table.length,
+              itemBuilder: (context, index) {
+                final Report record = _table[index];
+                //print(record);
+                return _buildRow(
+                  record.id,
+                  record.name,
+                  record.postName,
+                  record.description,
+                  record.datetime,
+                  record.userId,
+                  record.completed_status
+                );
+              },
             ),
-          )
+            isLoading ? loadingCard(context) : Container(),
+          ],
+        ),
+      ),
+    )
         : Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 10,
-            ),
-            child: Center(
-              child: const Text(
-                'No Data Found',
-                style: TextStyle(color: Color(0XFF808080), fontSize: 20.0),
-              ),
-            ),
-          );
+      padding: EdgeInsets.symmetric(
+        vertical: 10,
+      ),
+      child: Center(
+        child: const Text(
+          'No Data Found',
+          style: TextStyle(color: Color(0XFF808080), fontSize: 20.0),
+        ),
+      ),
+    );
   }
 
   String getInitials(String name) => name.isNotEmpty
@@ -823,7 +904,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
                             selected = 'Abuse';
@@ -847,7 +928,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
                             selected = 'Fake Action';
@@ -857,7 +938,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             'Fake Action',
                             style: TextStyle(
                               color: (selected != null &&
-                                      selected == 'Fake Action')
+                                  selected == 'Fake Action')
                                   ? PrimaryColor
                                   : Colors.black,
                               fontSize: 14,
@@ -872,7 +953,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
                             selected = 'Unreputable Organization';
@@ -882,7 +963,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             'Unreputable Organization',
                             style: TextStyle(
                               color: (selected != null &&
-                                      selected == 'Unreputable Organization')
+                                  selected == 'Unreputable Organization')
                                   ? PrimaryColor
                                   : Colors.black,
                               fontSize: 14,
@@ -897,7 +978,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: Text(
                           'Enter Reason (optional):',
                           style: TextStyle(
@@ -1031,7 +1112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ],
                     ),
-                   /* Container(
+                    /* Container(
                       alignment: FractionalOffset.topRight,
                       child: GestureDetector(
                         child: Icon(
@@ -1086,6 +1167,12 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
+        void _loadCounter(phone,identifier) async {
+          final prefs = await SharedPreferences.getInstance();
+          setState(() {
+            prefs.setInt(identifier, phone);
+          });
+        }
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setFilterState) {
             return CustomScrollView(
@@ -1107,7 +1194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ), */
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       child: Text(
                         'Filter by:',
                         style: TextStyle(
@@ -1134,12 +1221,19 @@ class _MyHomePageState extends State<MyHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               ListTile(
-                                onTap: (){
+                                onTap: () {
                                   callMostRecentApi();
-                                  setState(() {
+                                  setState(()  {
                                     filterGroupValue = 0;
+
                                   });
                                   Navigator.pop(context);
+                                  _loadCounter(0,'filterGroupValue');
+                                  print(filterGroupValue);
+                                  // final prefs = await SharedPreferences.getInstance();
+                                  // setState(() {
+                                  //   prefs.setInt("filterGroupValue", filterGroupValue);
+                                  // });
                                 },
                                 title: Text(
                                   'Most Recent',
@@ -1175,9 +1269,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Petition'),
-                                    onChanged: (val) {
-                                      setState(() {
+                                    onChanged: (val)  {
+                                      setState(()  {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Petition')) {
@@ -1187,6 +1282,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+                                      _loadCounter(-1,'filterGroupValue');
+
                                     },
                                   ),
                                   CheckboxListTile(
@@ -1200,9 +1297,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Donate'),
-                                    onChanged: (val) {
-                                      setState(() {
+                                    onChanged: (val)  {
+                                      setState(()  {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Donate')) {
@@ -1212,6 +1310,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+                                      _loadCounter(-1,'filterGroupValue');
+
                                     },
                                   ),
                                   CheckboxListTile(
@@ -1225,9 +1325,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Email'),
-                                    onChanged: (val) {
+                                    onChanged: (val)  {
                                       setState(() {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Email')) {
@@ -1237,6 +1338,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+                                      _loadCounter(-1,'filterGroupValue');
+
                                     },
                                   ),
                                   CheckboxListTile(
@@ -1250,9 +1353,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Call'),
-                                    onChanged: (val) {
-                                      setState(() {
+                                    onChanged: (val)  {
+                                      setState(()  {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Call')) {
@@ -1262,6 +1366,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+
                                     },
                                   ),
                                   CheckboxListTile(
@@ -1275,9 +1380,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Event'),
-                                    onChanged: (val) {
-                                      setState(() {
+                                    onChanged: (val)  {
+                                      setState(()  {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Event')) {
@@ -1287,6 +1393,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+                                      _loadCounter(-1,'filterGroupValue');
+
                                     },
                                   ),
                                   CheckboxListTile(
@@ -1300,9 +1408,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     value: filterList.contains('Other'),
-                                    onChanged: (val) {
-                                      setState(() {
+                                    onChanged: (val)  {
+                                      setState(()  {
                                         filterGroupValue = -1;
+
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Other')) {
@@ -1312,17 +1421,26 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       });
                                       callActionTypeFilterApi();
+                                      _loadCounter(-1,'filterGroupValue');
+
                                     },
                                   ),
                                 ],
                               ),
                               ListTile(
-                                onTap: (){
+                                onTap: () {
                                   callAllPostApi();
                                   setState(() {
                                     filterGroupValue = 1;
+
                                   });
                                   Navigator.pop(context);
+                                  _loadCounter(1,'filterGroupValue');
+
+                                  // final prefs = await SharedPreferences.getInstance();
+                                  // setState(() {
+                                  //   prefs.setInt("filterGroupValue", filterGroupValue);
+                                  // });
                                 },
                                 title: Text(
                                   'Your Interests',
@@ -1374,6 +1492,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Map data = new Map();
       data = json.decode(response.body) as Map;
       if (data['success']) {
+        print("success");
         //log(data['data'].toString());
         convertDataToList(data['data']);
       } else {
@@ -1482,11 +1601,14 @@ class _MyHomePageState extends State<MyHomePage> {
           description: item['desc_action_item'],
           postName: item['post_name'],
           datetime: item['created_date'],
+            completed_status: item['completed_status']
         ));
       }
 
       setState(() {
+        print("end1");
         reportList.addAll(tempList);
+        print(reportList);
         isLoading = false;
         loading = false;
       });

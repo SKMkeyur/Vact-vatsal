@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ourvoice/config/palette.dart';
+import 'package:ourvoice/constants/colors.dart';
 import 'package:ourvoice/widgets/success.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,7 +61,8 @@ class _AddPageState extends State<AddPage> {
       child: Scaffold(
         backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
+          //backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
+          backgroundColor: LightOrange,
           title: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
@@ -89,6 +91,7 @@ class _AddPageState extends State<AddPage> {
           ],
         ),
         body: Container(
+            color: LightOrange,
             child: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
             overscroll.disallowGlow();
@@ -152,7 +155,7 @@ class _AddPageState extends State<AddPage> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Create a compelling call to action!.';
+                          return 'Create a compelling call to action!';
                         }
                         return null;
                       },
@@ -229,7 +232,7 @@ class _AddPageState extends State<AddPage> {
                       },
                       validator: (value) {
                         if (value == null) {
-                          return 'Choose the one that best describes your action!.';
+                          return 'Choose the one that best describes your action!';
                         }
                         return null;
                       },
@@ -250,7 +253,7 @@ class _AddPageState extends State<AddPage> {
                     height: 10,
                   ),
                   Text(
-                    'Share what users need to do to complete this action.',
+                    'Share what users need to do to complete this action',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 10,
@@ -297,7 +300,7 @@ class _AddPageState extends State<AddPage> {
                     textInputAction: TextInputAction.newline,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Include context or instructions for others!.';
+                        return 'Include context or instructions for others!';
                       }
                       return null;
                     },
@@ -329,7 +332,7 @@ class _AddPageState extends State<AddPage> {
                         fillColor: Colors.white,
                         filled: true,
                         hintText:
-                            'Add link to petition, phone number, event, etc.',
+                            'Add link to petition, phone number, event, etc',
                         contentPadding:
                             EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                         enabledBorder: OutlineInputBorder(
@@ -356,7 +359,7 @@ class _AddPageState extends State<AddPage> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Hey! Share a valid link, phone number, etc..';
+                          return 'Hey! Share a valid link, phone number, etc';
                         }
                         return null;
                       },
@@ -535,7 +538,10 @@ class _AddPageState extends State<AddPage> {
                   });
                 },
                 child: Card(
-                  color: Color.fromRGBO(229, 229, 229, 0.2),
+                //  color: Color.fromRGBO(229, 229, 229, 0.2),
+                  color: movements.contains(e['name'])
+                      ? NewCompletedGreenButtonColor
+                      : Color.fromRGBO(229, 229, 229, 0.2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(25.0),
@@ -561,14 +567,18 @@ class _AddPageState extends State<AddPage> {
                           ),
                           child: Icon(
                             Icons.check,
-                            color: InputGreyBorderColor,
+                            color: movements.contains(e['name'])
+                                ? Colors.white
+                                : InputGreyBorderColor,
                             size: 18,
                           ),
                         ),
                         Text(
                           e['name'],
                           style: TextStyle(
-                            color: Colors.black,
+                            color: movements.contains(e['name'])
+                                ? Colors.white
+                                : Colors.black,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),

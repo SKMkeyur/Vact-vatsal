@@ -18,7 +18,6 @@ class TakeAction extends StatefulWidget {
   final String id;
   final String userId;
 
-
   TakeAction(this.id, this.userId);
 
   @override
@@ -247,7 +246,7 @@ class _TakeActionState extends State<TakeAction> {
                               )
                             : GestureDetector(
                                 onTap: () async {
-                                  if (!isCompleted) {
+                                  if (0==0) {
                                     var url = attachLink.contains("http") ? attachLink : "http://" + attachLink;
                                     //var url = "https://pub.dev/packages/simple_url_preview";
 
@@ -258,7 +257,7 @@ class _TakeActionState extends State<TakeAction> {
                                   }
                                 },
                                 child: Text(
-                                  attachLink,
+                                  attachLink.contains("http") ? attachLink : "http://" + attachLink,
                                   style: TextStyle(
                                     color: LinkBlueColor,
                                     fontSize: 14,
@@ -271,7 +270,26 @@ class _TakeActionState extends State<TakeAction> {
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 20.0),
-                                    child: SimpleUrlPreview(
+                                    child:
+
+                                    // SimpleUrlPreview(
+                                    //   url: 'http://innovativestack.com/',
+                                    //   titleStyle: TextStyle(
+                                    //     fontSize: 16,
+                                    //     fontWeight: FontWeight.bold,
+                                    //     color: Colors.red,
+                                    //   ),
+                                    //   descriptionStyle: TextStyle(
+                                    //     fontSize: 14,
+                                    //     color: Theme.of(context).primaryColor,
+                                    //   ),
+                                    //   siteNameStyle: TextStyle(
+                                    //     fontSize: 14,
+                                    //     color: Theme.of(context).primaryColor,
+                                    //   ),
+                                    // ),
+
+                                    SimpleUrlPreview(
                                       //url: "http://" + attachLink,
                                       url: attachLink.contains("http") ? attachLink : "http://" + attachLink,
                                       bgColor: Colors.grey[200],
@@ -301,9 +319,20 @@ class _TakeActionState extends State<TakeAction> {
                                         });
                                       },
                                     ),
-                                  )
-                                : Container()
-                            : Container()
+
+
+
+                        )
+                                : Container(
+                          // color: Colors.red,
+                          height: 100,
+                          width: 100,
+                        )
+                            : Container(
+                          // color: Colors.blue,
+                          height: 100,
+                          width: 100,
+                        )
                       ],
                     ),
                   ),
@@ -327,14 +356,21 @@ class _TakeActionState extends State<TakeAction> {
                         });
                       },
                     ),
-                    Expanded(
+                    Flexible(
                       /*child: Text(
                           "Given, Information are true and reliable. and I confirm that i am above 13 years.",
                       ),*/
-                      child: Text(
-                        // "Confirm that you're above the age of 13.",
-                        //"Confirm that you're at least 13 years old",
-                        "I certify that i took this action",
+                      child: InkWell(
+                        onTap: (){
+                          setState(() {
+                            isCheck = !isCheck;
+                          });
+                        },
+                        child: Text(
+                          // "Confirm that you're above the age of 13.",
+                          //"Confirm that you're at least 13 years old",
+                          "I certify that i took this action",
+                        ),
                       ),
                     ),
                   ],
@@ -490,10 +526,11 @@ class _TakeActionState extends State<TakeAction> {
   Future<void> callUpdatePostApi() async {
     try {
       final SharedPreferences prefs = await _sprefs;
-      String userId = prefs.getInt("ID").toString();
-
+      String userId1 = prefs.getInt("ID").toString();
+      print(userId1);
+      print(widget.userId);
       https://vact.tech/wp-json/wp/v2/save_completed_action_post?user_id=69&post_action_id=109&status=completed
-      var uri = 'https://vact.tech/wp-json/wp/v2/save_completed_action_post?user_post_id=${widget.userId}&user_action_id=$userId&post_action_id=${widget.id}&status=completed';
+      var uri = 'https://vact.tech/wp-json/wp/v2/save_completed_action_post?user_post_id=${widget.userId}&user_action_id=$userId1&post_action_id=${widget.id}&status=completed';
       //var uri = 'https://vact.tech/wp-json/wp/v2/save_completed_action_post?user_id=${widget.userId}&post_action_id=${widget.id}&status=completed';
 
       print('uri : ' + uri);

@@ -13,13 +13,13 @@ class Item {
 
 List<Item> itemList = [
   Item(
-    'Racial Injustice',
+    'Racial Justice',
     'assets/images/Interests/RacialJustice.png',
     Color.fromRGBO(165, 42, 42, 0.34),
     false,
   ),
   Item(
-    'Religious injustice',
+    'Religious Justice',
     'assets/images/Interests/religion.png',
     Color.fromRGBO(255, 148, 36, 0.47),
     false,

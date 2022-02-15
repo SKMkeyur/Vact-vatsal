@@ -45,7 +45,16 @@ class _SignUpPageState extends State<SignUpPage> {
   final emailOrPhone = TextEditingController();
   final psswrd = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isEmail(String input) => RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+      .hasMatch(input);
 
+
+  void _loadCounter(phone,identifier) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString(identifier, phone);
+    });
+  }
 
 
   bool showPass = false;
@@ -163,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Let us know your first name!.';
+                          return 'Let us know your first name!';
                         }
                         return null;
                       },
@@ -223,7 +232,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Don\'t forget to share your last name!.';
+                          return 'Don\'t forget to share your last name!';
                         }
                         return null;
                       },
@@ -252,6 +261,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Container(
                     width: double.infinity,
                     child: TextFormField(
+                      inputFormatters: [],
                       controller: emailOrPhone,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
@@ -284,10 +294,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       textInputAction: TextInputAction.next,
-                      validator: MultiValidator([
-                        RequiredValidator(errorText: "We might slide into your inbox to say hi."),
-                        EmailValidator(errorText: "Enter Valid Email.")
-                      ]),
+                      validator: (value) {
+                        if (!isEmail(value)) {
+                            return 'Please enter a valid email';
+                          }
+                        return null;
+                      },
+                      // MultiValidator([
+                      //   RequiredValidator(errorText: "We might slide into your inbox to say hi."),
+                      //   EmailValidator(errorText: "Enter Valid Email.")
+                      // ]),
                     ),
                   ),
                   SizedBox(
@@ -314,9 +330,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     width: double.infinity,
                     margin: EdgeInsets.only(bottom: 50.0),
                     child: TextFormField(
+
                       controller: psswrd,
                       obscureText: !showPass,
                       decoration: InputDecoration(
+                        errorMaxLines: 2,
                         fillColor: Colors.white,
                         filled: true,
                         hintText: 'Set Your Password',
@@ -361,7 +379,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Preferably not 1234.';
+                          return 'Password should be at least 6 characters with at least one symbol (\$, #, %) and one number';
+                        }
+                        if (!(value.contains("\$") || value.contains("#") || value.contains("%"))){
+                          return "Password should have atlest \$, # or %";
+                        }else if(!value.contains(new RegExp(r'[0-9]'))){
+                          return "Password should have atlest one number";
+                        }else if(value.length<6){
+                          return "Password should have atlest six characters";
                         }
                         return null;
                       },
@@ -439,7 +464,7 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: const Text('This email has already been registered.'),
+          content: const Text('This email has already been registered'),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok', style: TextStyle(color: Color(0xff042e4d))),
@@ -600,7 +625,7 @@ class _Page2State extends State<Page2> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     //"Almost there, just a few more things.",
-                    "Almost there! Just a few more things about you.",
+                    "Almost there! Just a few more things about you",
                     style: TextStyle(
                       fontFamily: 'Open Sans',
                       fontWeight: FontWeight.w400,
@@ -662,7 +687,7 @@ class _Page2State extends State<Page2> {
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Field must not be empty.';
+                        return 'Field must not be empty';
                       }
                       else if(!RegExp(r'^[a-zA-Z0-9_.]+$').hasMatch(value)){
                         return "only . and _ is allowed as special character";
@@ -751,7 +776,7 @@ class _Page2State extends State<Page2> {
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'When is your birthday?.';
+                        return 'When is your birthday?';
                       }
                       return null;
                     },
@@ -877,14 +902,23 @@ class _Page2State extends State<Page2> {
                         });
                       },
                     ),
-                    Expanded(
+                    Flexible(
                       /*child: Text(
                           "Given, Information are true and reliable. and I confirm that i am above 13 years.",
                       ),*/
-                      child: Text(
-                         // "Confirm that you're above the age of 13.",
-                        //"Confirm that you're at least 13 years old",
-                        "I can confirm I am 13 years or older",
+                      child: InkWell(
+
+                        onTap: (){
+                          setState(() {
+                            isCheck = !isCheck;
+                          });
+                        },
+                        child: Text(
+                           // "Confirm that you're above the age of 13.",
+                          //"Confirm that you're at least 13 years old",
+                          //"I can confirm I am 13 years or older",
+                          "Confirm you're above the age of 13"
+                        ),
                       ),
                     ),
                   ],
@@ -916,7 +950,7 @@ class _Page2State extends State<Page2> {
                 //else if (currentYear - year >= 13) {
                 else if (currentYear - year <= 13) {
                   //ageRestrict = true;
-                  _alert(context, "Your age is below 13.");
+                  _alert(context, "Your age is below 13");
                 }else{
                 //if (ageRestrict) {
 

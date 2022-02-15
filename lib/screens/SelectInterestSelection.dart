@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:ourvoice/config/interest_config.dart';
 import 'package:ourvoice/screens/SelectedInterestSection.dart';
 import 'package:ourvoice/screens/signuppage.dart';
@@ -18,6 +19,7 @@ class SelectInterestSelection extends StatefulWidget {
 class _SelectInterestSelectionState extends State<SelectInterestSelection> {
   var interest = [];
   String userInterest;
+  bool _saving = false;
 
   @override
   void initState() {
@@ -48,7 +50,9 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
         backgroundColor: Colors.white,
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+          child: ModalProgressHUD(
+              opacity: 0,
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(
@@ -77,7 +81,7 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
                 alignment: Alignment.topLeft,
                 child: Text(
                   "Choose issues that you care about! What gets you fired up?",
-                 // "Choose issues that you care about. This will help us recommend relevant action items for you",
+                  // "Choose issues that you care about. This will help us recommend relevant action items for you",
                   //  textAlign: TextAlign.center,
                   style: TextStyle(
 //                      fontWeight: FontWeight.bold,
@@ -95,6 +99,7 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
                     overscroll.disallowGlow();
                   },
                   child: grid(context),
+                  //   child: ModalProgressHUD(child: grid(context), inAsyncCall: _saving),
                 ),
               ),
               SizedBox(
@@ -179,7 +184,9 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
                 height: 25,
               ),
             ],
-          ),
+          ), inAsyncCall: _saving)
+
+          ,
         ),
       ),
       onWillPop: () async {
@@ -279,6 +286,13 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
 
   Future<void> callRegisterApi(String firstName,String secondName, String emailOrPhone, String psswrd,
       String userName, String dob, String country,String state, String interest) async {
+    print("password  =   "+psswrd);
+    String pass = psswrd.replaceAll("#", "%23");
+    print(psswrd);
+    print(pass);
+      setState(() {
+       _saving = true;
+      });
     print('--------Last Screen------' + interest);
     if (firstName != '' &&
         secondName != '' &&
@@ -290,12 +304,15 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
         // state != '' &&
         interest != '') {
       var uri =
-          'https://vact.tech/wp-json/wp/v2/signup?first_name=$firstName&last_name=$secondName&birth_day=$dob&email=$emailOrPhone&country=$country&state=$state&user_name=$userName&password=$psswrd&interests=$interest';
+          'https://vact.tech/wp-json/wp/v2/signup?first_name=$firstName&last_name=$secondName&birth_day=$dob&email=$emailOrPhone&country=$country&state=$state&user_name=$userName&password=$pass&interests=$interest';
       print('uri :' + uri);
       var response = await post(Uri.parse(uri));
       print(response.body);
       final data = json.decode(response.body) as Map;
       if (data['success'] == true) {
+        setState(() {
+          _saving = false;
+        });
         /*Navigator.push(
           context,
           new MaterialPageRoute(
@@ -314,6 +331,7 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
           ),
         );
       } else {
+        _userAlreadyExist(context);
         print('failed');
       }
     } else {
@@ -339,13 +357,30 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
       },
     );
   }
-
+  Future<void> _userAlreadyExist(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const Text('User Already Exists'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok', style: TextStyle(color: Color(0xff042e4d))),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   Future<void> _noInterestSelectedAlert(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: const Text('Choose at least one topic that makes your heart race!.'),
+          content: const Text('Choose at least one topic that makes your heart race!'),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok', style: TextStyle(color: Color(0xff042e4d))),
