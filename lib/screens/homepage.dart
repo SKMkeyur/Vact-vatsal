@@ -14,6 +14,8 @@ import 'package:random_color/random_color.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:device_apps/device_apps.dart';
+import 'package:uni_links/uni_links.dart';
 
 import 'loginpage.dart';
 
@@ -46,10 +48,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ScrollController _scrollController = ScrollController();
 
+  sharefunction() async{
+    bool isInstalled = await DeviceApps.isAppInstalled('vact.politics.activism.community');
+
+    print(isInstalled);
+   // Application app = await DeviceApps.getApp('vact.politics.activism.community');
+    //DeviceApps.openApp('vact.politics.activism.community');
+
+  }
+
+  Future<void> initUniLinks()async{
+    try{
+      Uri initialLink = await getInitialUri();
+      print(initialLink);
+    } on PlatformException {
+      print('platfrom exception unilink');
+    }
+  }
+
+
+
   @override
   void initState() {
     super.initState();
     intitialMethod();
+    sharefunction();
+    initUniLinks();
     // callAllPostApi();
     // _scrollController.addListener(() {
     //   if(_scrollController.position.atEdge){
@@ -143,8 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(
               fontSize: 32, fontWeight: FontWeight.w600, color: Colors.black),
         ),*/
-        title: Image.asset(
-          "assets/images/VactType.png",height: 45,width: 70,
+        title: InkWell(
+          onTap: ()async{
+            initUniLinks();
+          },
+          child: Image.asset(
+            "assets/images/VactType.png",height: 45,width: 70,
+          ),
         ),
         backgroundColor: Color.fromRGBO(255, 148, 36, 0.47),
         elevation: 0,
@@ -503,6 +532,9 @@ class _MyHomePageState extends State<MyHomePage> {
               width: double.infinity,
               child: InkWell (
                 onTap: (){
+                  print(id);
+                  print(userId);
+
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => TakeAction(id, userId),
@@ -694,7 +726,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   var shareText="Hey! I found this action via the app Vact and thought you’d be interested: '$postName' - '$description'";
                   //shareText=shareText+"\nTake Action Now: $a";
-                  shareText=shareText+"\nSee the full action and learn about more ways to be an everyday activist via Vact! : https://play.google.com/store/apps/details?id=com.example.ourvoice";
+                  shareText=shareText+"\nSee the full action and learn about more ways to be an everyday activist via Vact! : "
+                  "https://vact.tech/wp-json/wp/v2/share_action?act_id="+id+"&user_id="+userId;
+                      // "https://play.google.com/store/apps/details?id=vact.politics.activism.community";
                   Share.share(shareText);
                 },
                 child: RichText(

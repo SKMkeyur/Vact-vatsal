@@ -35,30 +35,47 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   @override
   void initState() {
     super.initState();
+    // if(!redirectButton){
+    // }else{
+    //
+    // }
+
     //_otp.text = widget.otp;
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double safe = MediaQuery.of(context).padding.top;
+    double height1=height-safe;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Update Password',
-          style: TextStyle(
-              fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_outlined,
-            color: Colors.black,
-          ),
-          onPressed: () => Navigator.pop(context, false),
-          /* onPressed: () => exit(0), */
-        ),
-      ),
+
+      // appBar:
+      // !redirectButton ?
+      // AppBar(
+      //   title: Text(
+      //     'Update Password',
+      //     style: TextStyle(
+      //         fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),
+      //   ),
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   automaticallyImplyLeading: true,
+      //   leading: IconButton(
+      //     icon: Icon(
+      //       Icons.arrow_back_ios_outlined,
+      //       color: Colors.black,
+      //     ),
+      //     onPressed: () => Navigator.pop(context, false),
+      //     /* onPressed: () => exit(0), */
+      //   ),
+      // )
+      //     :
+      // PreferredSize(preferredSize: Size(0.0, 0.0),child: Container(),)
+
+
       body: !redirectButton
           ? SingleChildScrollView(
             child: Form(
@@ -69,6 +86,24 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                AppBar(
+                  title: Text(
+                    'Update Password',
+                    style: TextStyle(
+                        fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),
+                  ),
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  automaticallyImplyLeading: true,
+                  leading: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_outlined,
+                      color: Colors.black,
+                    ),
+                    onPressed: () => Navigator.pop(context, false),
+                    /* onPressed: () => exit(0), */
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -304,53 +339,105 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
         ),
       ),
           )
-          : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 60,
+          : GestureDetector(
+         behavior: HitTestBehavior.opaque,
+           onTap: () {
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (context) => new LoginPage(),
             ),
-            Image.asset(
-              "assets/images/tick_icon.png",
-              height: 100, //40%
-            ),
-            SizedBox(
-              height: 60,
-            ),
-            Text(
-              message,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              child: Text(
-                "Sign In",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xffffffff),
+          );
+        },
+            child: Center(
+        child: Container(
+            height: height,
+            width: width,
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      height: height*0.33,
+                      child: Image.asset(
+                        'assets/images/Interests/giphy.gif',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      height: height*0.33,
+
+                      child: Image.asset(
+                        'assets/images/Interests/giphy.gif',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      height: height*0.33,
+
+                      child: Image.asset(
+                        'assets/images/Interests/giphy.gif',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (context) => new LoginPage(),
+
+                Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/tick_icon.png",
+                          height: 100, //40%
+                        ),
+                      ),
+                      SizedBox(
+                        height: 60,
+                      ),
+                      Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Visibility(
+                        visible: false,
+                        child: ElevatedButton(
+                          child: Text(
+                            "Sign In",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xffffffff),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) => new LoginPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                );
-              },
-            )
-          ],
+                ),
+              ],
+            ),
         ),
       ),
+          ),
     );
   }
 
@@ -398,6 +485,16 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
           redirectButton = data['success'];
         });
       });
+      Timer(Duration(seconds: 3), () {
+        Navigator.push(
+          context,
+          new MaterialPageRoute(
+            builder: (context) => new LoginPage(),
+          ),
+        );
+      });
+
+
     } catch (e) {
       Timer(Duration(seconds: 1), () {
         setState(() {

@@ -286,10 +286,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           await SharedPreferences.getInstance();
                       await prefs.clear();
 
+                       // Navigator.pushAndRemoveUntil(context,
+                       //     MaterialPageRoute(
+                       //         builder: (context) =>
+                       //             LoginPage()
+                       //     ),
+                       //         (Route route) => false
+                       // );
+
+
                       Navigator.of(context, rootNavigator: true)
                           .pushAndRemoveUntil(
                         MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage(),
+                          builder: (context) => LoginPage(),
                         ),
                         (Route route) => false,
                       );

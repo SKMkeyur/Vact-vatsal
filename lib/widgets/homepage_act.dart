@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/src/preview_data.dart';
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:http/http.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:ourvoice/config/palette.dart';
+import 'package:ourvoice/constants/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
@@ -34,6 +38,7 @@ class _TakeActionState extends State<TakeAction> {
   String postName, description, userName, attachLink;
 
   bool isCompleted = false;
+
 
   @override
   void initState() {
@@ -156,6 +161,7 @@ class _TakeActionState extends State<TakeAction> {
               ),
               Positioned(
                 top: toolBar + 40,
+                bottom: toolBar+0,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   height: height - 40,
@@ -249,11 +255,10 @@ class _TakeActionState extends State<TakeAction> {
                                   if (0==0) {
                                     var url = attachLink.contains("http") ? attachLink : "http://" + attachLink;
                                     //var url = "https://pub.dev/packages/simple_url_preview";
-
                                     if (await canLaunch(url)) await launch(url);
-                                    setState(() {
-                                      isCompleted = true;
-                                    });
+                                    // setState(() {
+                                    //   isCompleted = true;
+                                    // });
                                   }
                                 },
                                 child: Text(
@@ -265,60 +270,78 @@ class _TakeActionState extends State<TakeAction> {
                                   ),
                                 ),
                               ),
-                        attachLink != null
+                        attachLink != null && attachLink.length!=0
                             ? attachLink.contains(".")
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 20.0),
                                     child:
+                                    AnyLinkPreview(
+                                        link: attachLink.contains("http") ? attachLink : "http://" + attachLink,
+                                        displayDirection: uiDirection.uiDirectionHorizontal,
+                                        showMultimedia: true,
+                                        bodyMaxLines: 5,
+                                        bodyTextOverflow: TextOverflow.ellipsis,
+                                        titleStyle: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                        bodyStyle: TextStyle(color: Colors.white, fontSize: 12),
+                                        errorBody: 'Show my custom error body',
+                                        errorTitle: 'Show my custom error title',
+                                        errorWidget: Container(
+                                          color: Colors.white,
+                                          child: Text('No Preview Available!'),
+                                        ),
+                                        errorImage: "https://google.com/",
+                                        cache: Duration(days: 7),
+                                        backgroundColor: Color(0xffc2c2c2),
+                                        borderRadius: 12,
+                                        removeElevation: false,
+                                        onTap: () async{
+                                             // var url = "http://" +attachLink;
+                                              var url = attachLink.contains("http") ? attachLink : "http://" + attachLink;
+                                              if (await canLaunch(url))
+                                                await launch(url);
+                                              // setState(() {
+                                              //   isCompleted = true;
+                                              // });
+                                        }, // This disables tap event
+                        )
+
+
 
                                     // SimpleUrlPreview(
-                                    //   url: 'http://innovativestack.com/',
+                                    //   //url: "http://" + attachLink,
+                                    //   url: attachLink.contains("http") ? attachLink : "http://" + attachLink,
+                                    //   bgColor: Colors.grey[200],
+                                    //   previewHeight: MediaQuery.of(context).size.height/4,
+                                    //   titleLines: 1,
+                                    //   descriptionLines: 2,
                                     //   titleStyle: TextStyle(
                                     //     fontSize: 16,
                                     //     fontWeight: FontWeight.bold,
-                                    //     color: Colors.red,
+                                    //     color: Colors.black,
                                     //   ),
                                     //   descriptionStyle: TextStyle(
                                     //     fontSize: 14,
-                                    //     color: Theme.of(context).primaryColor,
+                                    //     color: Colors.grey,
                                     //   ),
                                     //   siteNameStyle: TextStyle(
                                     //     fontSize: 14,
-                                    //     color: Theme.of(context).primaryColor,
+                                    //     color: Colors.blue,
                                     //   ),
+                                    //   onTap: () async {
+                                    //    // var url = "http://" +attachLink;
+                                    //     var url = attachLink.contains("http") ? attachLink : "http://" + attachLink;
+                                    //     if (await canLaunch(url))
+                                    //       await launch(url);
+                                    //     setState(() {
+                                    //       isCompleted = true;
+                                    //     });
+                                    //   },
                                     // ),
-
-                                    SimpleUrlPreview(
-                                      //url: "http://" + attachLink,
-                                      url: attachLink.contains("http") ? attachLink : "http://" + attachLink,
-                                      bgColor: Colors.grey[200],
-                                      previewHeight: MediaQuery.of(context).size.height/4,
-                                      titleLines: 1,
-                                      descriptionLines: 2,
-                                      titleStyle: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                      descriptionStyle: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                      ),
-                                      siteNameStyle: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.blue,
-                                      ),
-                                      onTap: () async {
-                                       // var url = "http://" +attachLink;
-                                        var url = attachLink.contains("http") ? attachLink : "http://" + attachLink;
-                                        if (await canLaunch(url))
-                                          await launch(url);
-                                        setState(() {
-                                          isCompleted = true;
-                                        });
-                                      },
-                                    ),
 
 
 
@@ -340,12 +363,18 @@ class _TakeActionState extends State<TakeAction> {
               ),
             ],
           ),
+
           floatingActionButton: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if(!isCompleted)Container(
-                width: MediaQuery.of(context).size.width * 0.75,
+              if(!isCompleted)
+                Container(
+                alignment: Alignment.center,
+                color: Colors.white,
+                width:MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12),
+                //width: MediaQuery.of(context).size.width * 0.75,
                 child: Row(
                   children: [
                     Checkbox(
@@ -376,41 +405,49 @@ class _TakeActionState extends State<TakeAction> {
                   ],
                 ),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: FlatButton(
-                  onPressed: () {
-                    if(!isCompleted ) {
-                      isCheck ?
-                        callUpdatePostApi()
-                      : _alert(context,"Please confirm if you took this action by clicking the checkbox");
+                Container(
+                padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width * 0.12),
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
 
-                    }
-                  },
-                  child: Text(
-                    !isCompleted ? 'Complete' : 'Completed',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  color: isCompleted
-                      ? Colors.grey[400]
-                      : NewCompletedGreenButtonColor,
-                  shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: NewCompletedGreenButtonColor,
-                        width: 1,
-                        style: BorderStyle.solid,
+               //   color: Colors.white,
+               //  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  child: FlatButton(
+                    onPressed: () {
+                      if(!isCompleted ) {
+                        isCheck ?
+                          callUpdatePostApi()
+                        : _alert(context,"Please confirm if you took this action by clicking the checkbox");
+
+                      }
+                    },
+                    child: Text(
+                      !isCompleted ? 'Complete' : 'Completed',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
                       ),
-                      borderRadius: BorderRadius.circular(30)),
+                    ),
+                    color: isCompleted
+                        ? Colors.grey[400]
+                        : NewCompletedGreenButtonColor,
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: NewCompletedGreenButtonColor,
+                          width: 1,
+                          style: BorderStyle.solid,
+                        ),
+                        borderRadius: BorderRadius.circular(30)),
+                  ),
                 ),
               ),
             ],
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+              FloatingActionButtonLocation.centerDocked,
         ),
       ),
       onWillPop: () async {
@@ -508,7 +545,6 @@ class _TakeActionState extends State<TakeAction> {
           attachLink = data['data'][0]['attach_link'];
           userName = data['data'][0]['user_name'];
           isCompleted = data['data'][0]['status'] == 'completed' ? true : false;
-
           for (var item in data['data'][0]['post_mov']) {
             typeList.add({'name': item['movement_name'].toString()});
           }

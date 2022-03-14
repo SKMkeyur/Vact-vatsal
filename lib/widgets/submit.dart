@@ -29,30 +29,32 @@ class _SubmitScreenState extends State<SubmitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
   //  final todo = ModalRoute.of(context).settings.arguments as Todo;
    // print('--------Last Screen------' + todo.interest);
     return WillPopScope(
       onWillPop: () {  },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          actions: <Widget>[
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.close,
-            //     size: 30,
-            //   ),
-            //   onPressed: () => Navigator.push(
-            //     context,
-            //     new MaterialPageRoute(
-            //       builder: (context) => new LoginPage(),
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   elevation: 0,
+        //   automaticallyImplyLeading: false,
+        //   actions: <Widget>[
+        //     // IconButton(
+        //     //   icon: Icon(
+        //     //     Icons.close,
+        //     //     size: 30,
+        //     //   ),
+        //     //   onPressed: () => Navigator.push(
+        //     //     context,
+        //     //     new MaterialPageRoute(
+        //     //       builder: (context) => new LoginPage(),
+        //     //     ),
+        //     //   ),
+        //     // ),
+        //   ],
+        // ),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -64,39 +66,72 @@ class _SubmitScreenState extends State<SubmitScreen> {
             );
           },
           child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            height: height,
+            child: Stack(
               children: [
-                Center(
-                  child: Image.asset(
-                    'assets/images/icegif.gif',
+                Container(
+                  height: height,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: height*0.33,
+                        child: Image.asset(
+                          'assets/images/Interests/giphy.gif',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        height: height*0.33,
+                        child: Image.asset(
+                          'assets/images/Interests/giphy.gif',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        height: height*0.33,
+                        child: Image.asset(
+                          'assets/images/Interests/giphy.gif',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Center(
-                  child: Text(
-                    'Welcome to Vact!',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 19,
-                      fontWeight: FontWeight.w600,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        'assets/images/tick_icon.png',
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Text(
-                    "Now let's go take action!",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
+                    SizedBox(
+                      height: 30,
                     ),
-                  ),
+                    Center(
+                      child: Text(
+                        'Welcome to Vact!',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: Text(
+                        "Now let's go take action!",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

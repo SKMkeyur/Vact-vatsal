@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ourvoice/assets/ov_icons.dart';
@@ -29,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
 
+  bool isLoading  = true;
+
   String count = "";
 
   bool loading = false;
@@ -45,15 +46,20 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   getActionsCount() async {
+    setState(() {
+      isLoading=true;
+    });
     try {
       var uri = 'https://vact.tech/wp-json/wp/v2/getactioncount';
       print('uri :' + uri);
       var response = await get(Uri.parse(uri));
       final data = json.decode(response.body) as Map;
       if (data != null) {
-        count = data['action_count'];
-        print(count);
-        setState(() {});
+        setState(() {
+          count = data['action_count'];
+          print(count);
+          isLoading=false;
+        });
       }
     } catch (e) {
       print(e);
@@ -66,18 +72,31 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     getActionsCount();
   }
-
+  // Container(
+  // width: 100,
+  // height: 100,
+  // color: Colors.red,
+  // )
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: SecondaryColor,
-      body: GestureDetector(
+      resizeToAvoidBottomInset: false,
+      //backgroundColor: SecondaryColor,
+      body:
+      GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/images/Interests/login_background.png'),
+              fit: BoxFit.fill,
+            ),
+          ),
           height: height,
           width: width,
           padding: EdgeInsets.all(20.0),
@@ -121,7 +140,11 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.black),
                   ),
                 ),
-                int.parse(count) < 100 ? Container() : Text("$count Actions Taken"),
+                isLoading==false ?
+                int.parse(count) < 100 ? Container() : Text("$count Actions Taken")
+                :
+                    Container()
+                ,
                 SizedBox(
                   height: 40.0,
                 ),
@@ -396,7 +419,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
+      )
+
+
+
+      ,
     );
   }
 
