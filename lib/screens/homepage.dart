@@ -941,6 +941,30 @@ class _MyHomePageState extends State<MyHomePage> {
                         EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
+                            selected = 'Misinformation';
+                            print(selected);
+                          }),
+                          child: Text(
+                            'Misinformation',
+                            style: TextStyle(
+                              color: (selected != null && selected == 'Misinformation')
+                                  ? PrimaryColor
+                                  : Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                        height: 4.0,
+                      ),
+                      Padding(
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        child: GestureDetector(
+                          onTap: () => setButtonState(() {
                             selected = 'Abuse';
                             print(selected);
                           }),
@@ -965,14 +989,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
-                            selected = 'Fake Action';
+                            selected = 'Spam';
                             print(selected);
                           }),
                           child: Text(
-                            'Fake Action',
+                            'Spam',
                             style: TextStyle(
                               color: (selected != null &&
-                                  selected == 'Fake Action')
+                                  selected == 'Spam')
                                   ? PrimaryColor
                                   : Colors.black,
                               fontSize: 14,
@@ -990,14 +1014,39 @@ class _MyHomePageState extends State<MyHomePage> {
                         EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         child: GestureDetector(
                           onTap: () => setButtonState(() {
-                            selected = 'Unreputable Organization';
+                            selected = 'Block User';
                             print(selected);
                           }),
                           child: Text(
-                            'Unreputable Organization',
+                            'Block User',
                             style: TextStyle(
                               color: (selected != null &&
-                                  selected == 'Unreputable Organization')
+                                  selected == 'Block User')
+                                  ? PrimaryColor
+                                  : Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                        height: 4.0,
+                      ),
+                      Padding(
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        child: GestureDetector(
+                          onTap: () => setButtonState(() {
+                            selected = 'Other';
+                            print(selected);
+                          }),
+                          child: Text(
+                            'Other',
+                            style: TextStyle(
+                              color: (selected != null &&
+                                  selected == 'Other')
                                   ? PrimaryColor
                                   : Colors.black,
                               fontSize: 14,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ourvoice/screens/profilepage.dart';
 import 'package:ourvoice/widgets/bottom_navigation.dart';
 import 'package:ourvoice/config/tab_item.dart';
 import 'package:ourvoice/widgets/tab_navigator.dart';
@@ -18,10 +19,19 @@ class AppState extends State<App> {
   };
 
   void _selectTab(CustomTabItem tabItem) {
-    if (tabItem == _currentTab) {
+    print(tabItem);
+    if (tabItem == CustomTabItem.profile){
+      print("profile");
+      Navigator
+          .of(context)
+          .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
+        return new ProfilePage();
+      }));
+    }else if (tabItem == _currentTab) {
       // pop to first route
       _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
     } else {
+
       setState(() => _currentTab = tabItem);
     }
   }

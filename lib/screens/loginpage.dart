@@ -142,8 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 isLoading==false ?
                 int.parse(count) < 100 ? Container() : Text("$count Actions Taken")
-                :
-                    Container()
+                    :
+                Container()
                 ,
                 SizedBox(
                   height: 40.0,
@@ -174,9 +174,9 @@ class _LoginPageState extends State<LoginPage> {
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide:
-                              BorderSide(color: Color(0xFFff862e), width: 2.0)),
+                          BorderSide(color: Color(0xFFff862e), width: 2.0)),
                       errorText:
-                          _validateUserName ? 'Username can\'t be empty' : null,
+                      _validateUserName ? 'Username can\'t be empty' : null,
                     ),
                     textInputAction: TextInputAction.next,
                     validator: (value) {
@@ -260,14 +260,14 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           }),
                       errorText:
-                          _validatePassword ? 'Password can\'t be empty' : null,
+                      _validatePassword ? 'Password can\'t be empty' : null,
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: BorderSide(color: Colors.white)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide:
-                              BorderSide(color: Color(0xFFff862e), width: 2.0)),
+                          BorderSide(color: Color(0xFFff862e), width: 2.0)),
                     ),
                     textInputAction: TextInputAction.next,
                     validator: (value) {
@@ -323,9 +323,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 loadingButton
                     ? SizedBox(
-                        height: 15,
-                        width: 15,
-                        child: CircularProgressIndicator())
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator())
                     : Center(),
                 SizedBox(
                   height: 10.0,
@@ -340,54 +340,54 @@ class _LoginPageState extends State<LoginPage> {
                       child: loading
                           ? CircularProgressIndicator()
                           : Text(
-                              'Login',
-                              style: TextStyle(
-                                  fontSize: 16.0, color: Color(0xffffffff)),
-                            ),
+                        'Login',
+                        style: TextStyle(
+                            fontSize: 16.0, color: Color(0xffffffff)),
+                      ),
                       color: loadingButton ? Colors.grey : Color(0xFFff862e),
                       onPressed: () async {
                         !loadingButton
                             ? setState(() {
-                                (_userName.text.isEmpty ||
-                                        _userName.text == null)
-                                    ? _validateUserName = true
-                                    : _validateUserName = false;
-                                (_password.text.isEmpty ||
-                                        _password.text == null)
-                                    ? _validatePassword = true
-                                    : _validatePassword = false;
-                                if (!_validateUserName && !_validatePassword) {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
-                                  callLoginApi();
-                                  setState(() {
-                                    showProgressloading =
-                                        true; // then login button is pressed the circular flutter indicator will get active
-                                  });
-                                  // stop the Progress indicator after 5 seconds
-                                  new Future.delayed(const Duration(seconds: 3),
-                                      () {
-                                    setState(() => showProgressloading = false);
-                                  });
-                                } else {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
-                                  _validatePassword
-                                      ? FocusScope.of(context)
-                                          .requestFocus(_passwordFocusNode)
-                                      : null;
-                                  _validateUserName
-                                      ? FocusScope.of(context)
-                                          .requestFocus(_emailFocusNode)
-                                      : null;
-                                }
-                              })
+                          (_userName.text.isEmpty ||
+                              _userName.text == null)
+                              ? _validateUserName = true
+                              : _validateUserName = false;
+                          (_password.text.isEmpty ||
+                              _password.text == null)
+                              ? _validatePassword = true
+                              : _validatePassword = false;
+                          if (!_validateUserName && !_validatePassword) {
+                            FocusScopeNode currentFocus =
+                            FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            callLoginApi();
+                            setState(() {
+                              showProgressloading =
+                              true; // then login button is pressed the circular flutter indicator will get active
+                            });
+                            // stop the Progress indicator after 5 seconds
+                            new Future.delayed(const Duration(seconds: 3),
+                                    () {
+                                  setState(() => showProgressloading = false);
+                                });
+                          } else {
+                            FocusScopeNode currentFocus =
+                            FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            _validatePassword
+                                ? FocusScope.of(context)
+                                .requestFocus(_passwordFocusNode)
+                                : null;
+                            _validateUserName
+                                ? FocusScope.of(context)
+                                .requestFocus(_emailFocusNode)
+                                : null;
+                          }
+                        })
                             : {};
                       },
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -471,9 +471,9 @@ class _LoginPageState extends State<LoginPage> {
             if (data2['success'] == true) {
               data3 = data2['data'];
               name = data3['first_name']
-                      .toString()
-                      .replaceAll("[", "")
-                      .replaceAll("]", "") +
+                  .toString()
+                  .replaceAll("[", "")
+                  .replaceAll("]", "");
                   " " +
                   data3['last_name']
                       .toString()

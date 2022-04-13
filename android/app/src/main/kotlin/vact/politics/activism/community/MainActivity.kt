@@ -1,4 +1,4 @@
-package com.example.ourvoice
+package vact.politics.activism.community
 
 import io.flutter.embedding.android.FlutterActivity
 

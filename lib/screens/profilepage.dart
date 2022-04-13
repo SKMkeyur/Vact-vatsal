@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ourvoice/config/interest_config.dart';
 import 'package:ourvoice/config/palette.dart';
 import 'package:ourvoice/config/report.dart';
+import 'package:ourvoice/config/tab_item.dart';
 import 'package:ourvoice/screens/privacyPolicy.dart';
 import 'package:ourvoice/screens/termsAndConditions.dart';
 import 'package:ourvoice/widgets/interest.dart';
@@ -18,6 +19,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/app.dart';
+import '../widgets/bottom_navigation.dart';
 import 'homepage.dart';
 import 'loginpage.dart';
 
@@ -40,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int actionPosted = 0;
 
   String name;
+  String profilename;
   String backgroundImage = "";
   String profileImage = "";
   bool _displayAll = false;
@@ -72,6 +76,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
   ProgressDialog pr;
 
+  var _currentTab = CustomTabItem.profile;
+  final _navigatorKeys = {
+    CustomTabItem.home: GlobalKey<NavigatorState>(),
+    CustomTabItem.add: GlobalKey<NavigatorState>(),
+    CustomTabItem.profile: GlobalKey<NavigatorState>(),
+  };
+
+  void _selectTab(CustomTabItem tabItem) {
+    if (tabItem == CustomTabItem.home){
+      print("profile");
+      Navigator
+          .of(context)
+          .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
+        return new App();
+      }));
+    } else if (tabItem == _currentTab) {
+      // pop to first route
+      _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
+    } else {
+      setState(() => _currentTab = tabItem);
+    }
+  }
 
   @override
   void initState() {
@@ -606,7 +632,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         )
                       : Text(
-                          name,
+                          profilename,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 19,
@@ -800,6 +826,11 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
+        bottomNavigationBar: BottomNavigation(
+          currentTab: _currentTab,
+          onSelectTab: _selectTab,
+        ),
+
       ),
       onWillPop: () async {
         Navigator.push(
@@ -998,7 +1029,12 @@ class _ProfilePageState extends State<ProfilePage> {
           name = data['data']['first_name']
               .toString()
               .replaceAll("[", "")
-              .replaceAll("]", "")+" "+data['data']['last_name'].toString().replaceAll("[", "")
+             // .replaceAll("]", "")+" "+data['data']['last_name'].toString().replaceAll("[", "")
+              .replaceAll("]", "");
+          profilename=data['data']['first_name']
+              .toString()
+              .replaceAll("[", "")
+             .replaceAll("]", "")+" "+data['data']['last_name'].toString().replaceAll("[", "")
               .replaceAll("]", "");
           actionPosted = data['no_of_action_posted'];
           actionTaken = data['no_of_action_taken'];
