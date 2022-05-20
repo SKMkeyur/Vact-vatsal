@@ -131,7 +131,7 @@ class _TakeActionState extends State<TakeAction> {
                             overflow: TextOverflow.clip,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 19,
+                              fontSize: 22,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -152,7 +152,7 @@ class _TakeActionState extends State<TakeAction> {
                             'posted by ' + userName,
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -187,7 +187,7 @@ class _TakeActionState extends State<TakeAction> {
                             'Description of Action Item',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 15,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -233,7 +233,7 @@ class _TakeActionState extends State<TakeAction> {
                             'Link',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 15,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -373,9 +373,10 @@ class _TakeActionState extends State<TakeAction> {
                 alignment: Alignment.center,
                 color: Colors.white,
                 width:MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12),
+                //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12),
                 //width: MediaQuery.of(context).size.width * 0.75,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Checkbox(
                       value: isCheck,
@@ -398,7 +399,8 @@ class _TakeActionState extends State<TakeAction> {
                         child: Text(
                           // "Confirm that you're above the age of 13.",
                           //"Confirm that you're at least 13 years old",
-                          "I certify that i took this action",
+                          "I certify that I took this action",
+                          style: TextStyle(fontSize: 14),
                         ),
                       ),
                     ),
@@ -530,8 +532,11 @@ class _TakeActionState extends State<TakeAction> {
 
   Future<void> callGetPostApi() async {
     try {
-      var uri =
-          'https://vact.tech/wp-json/wp/v2/get_all_user_post_by_id?user_id=${widget.userId}&post_action_id=${widget.id}';
+      final SharedPreferences prefs = await _sprefs;
+      String userId1 = prefs.getInt("ID").toString();
+      print(userId1);
+     // var uri = 'https://vact.tech/wp-json/wp/v2/get_all_user_post_by_id?user_id=${widget.userId}&post_action_id=${widget.id}';
+      var uri = 'https://vact.tech/wp-json/wp/v2/get_all_user_post_by_id?user_id=$userId1&post_action_id=${widget.id}';
       print('uri : ' + uri);
       var response = await post(Uri.parse(uri));
       //log('response :' + response.body);
@@ -544,11 +549,13 @@ class _TakeActionState extends State<TakeAction> {
           description = data['data'][0]['desc_action_item'];
           attachLink = data['data'][0]['attach_link'];
           userName = data['data'][0]['user_name'];
-          isCompleted = data['data'][0]['status'] == 'completed' ? true : false;
+         // isCompleted = data['data'][0]['status'] == 'completed' ? true : false;
+          isCompleted = data['data'][0]['completed_status'];
           for (var item in data['data'][0]['post_mov']) {
             typeList.add({'name': item['movement_name'].toString()});
           }
         });
+        callTapHistory();
       }
 
       setState(() {
@@ -603,5 +610,30 @@ class _TakeActionState extends State<TakeAction> {
         );
       },
     );
+  }
+
+  Future<void> callTapHistory() async {
+    try {
+      final SharedPreferences prefs = await _sprefs;
+      String userId1 = prefs.getInt("ID").toString();
+      print(userId1);
+      print(widget.userId);
+      var uri = 'https://vact.tech/wp-json/wp/v2/tap_history?user_id=$userId1&post_id=${widget.id}';
+
+      print('uri : ' + uri);
+      var response = await post(Uri.parse(uri));
+      log('response :' + response.body);
+      //Map data = new Map();
+      // data = json.decode(response.body) as Map;
+      // if (data['success']) {
+      //   Navigator.of(context, rootNavigator: true).pushReplacement(
+      //     MaterialPageRoute(
+      //       builder: (context) => CompletedScreen('Completed'),
+      //     ),
+      //   );
+      // }
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -486,6 +486,7 @@ class _LoginPageState extends State<LoginPage> {
             }
             print(data2);
             _saveProfileData(name, id);
+            setUserActiveStatus(id.toString());
             Navigator.push(context,
                 new MaterialPageRoute(builder: (context) => new App()));
           } else {
@@ -574,4 +575,17 @@ class _LoginPageState extends State<LoginPage> {
       sharedPreferences.commit();
     });
   }
+
+}
+
+ setUserActiveStatus(String userId) async {
+  try {
+    var uri1 = 'https://vact.tech/wp-json/wp/v2/user_active_status?user_id=$userId';
+    print('uri : ' + uri1);
+    var response1 = await post(Uri.parse(uri1));
+    print('response1 : ' + response1.body);
+  } catch(e) {
+    print(e);
+  }
+
 }

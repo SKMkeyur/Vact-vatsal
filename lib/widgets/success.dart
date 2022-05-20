@@ -133,7 +133,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

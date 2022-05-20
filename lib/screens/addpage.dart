@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ourvoice/config/palette.dart';
 import 'package:ourvoice/constants/colors.dart';
+import 'package:ourvoice/widgets/app.dart';
 import 'package:ourvoice/widgets/success.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,15 +31,15 @@ class _AddPageState extends State<AddPage> {
   Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
 
   List typeList = [
-    {'name': "Racial Injustice".toString().toUpperCase()},
-    {'name': "Religious injustice".toString().toUpperCase()},
-    {'name': "Climate change".toString().toUpperCase()},
-    {'name': "covid-19".toString().toUpperCase()},
-    {'name': "gun control".toString().toUpperCase()},
-    {'name': "women’s rights".toString().toUpperCase()},
-    {'name': "LGBTQ+ RightS".toString().toUpperCase()},
+    {'name': "Racial Justice".toString().toUpperCase()},
+    {'name': "Religious Justice".toString().toUpperCase()},
+    {'name': "Climate Change".toString().toUpperCase()},
+    {'name': "COVID-19".toString().toUpperCase()},
+    {'name': "Gun Control".toString().toUpperCase()},
+    {'name': "Women’s Rights".toString().toUpperCase()},
+    {'name': "LBGTQ+ Rights".toString().toUpperCase()},
     {'name': "Immigration".toString().toUpperCase()},
-    {'name': "MENTAL HEALTH".toString().toUpperCase()},
+    {'name': "Mental Health".toString().toUpperCase()},
     {'name': "EDUCATION".toString().toUpperCase()},
     {'name': "Healthcare".toString().toUpperCase()},
     {'name': "ECONOMY".toString().toUpperCase()},
@@ -59,7 +60,7 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
+      //  backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
         appBar: AppBar(
           //backgroundColor: Color.fromRGBO(229, 229, 229, 0.2),
           backgroundColor: LightOrange,
@@ -84,7 +85,7 @@ class _AddPageState extends State<AddPage> {
               onPressed: () => Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder: (context) => new MyHomePage(),
+                  builder: (context) => new App(),
                 ),
               ),
             ),
@@ -438,7 +439,7 @@ class _AddPageState extends State<AddPage> {
         Navigator.push(
           context,
           new MaterialPageRoute(
-            builder: (context) => new MyHomePage(),
+            builder: (context) => new App(),
           ),
         );
         return false;

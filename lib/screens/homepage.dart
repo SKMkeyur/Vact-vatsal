@@ -1346,7 +1346,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Petition',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Petition') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1359,9 +1359,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Petition')) {
-                                          filterList.remove('Petition');
+                                          setState(() {
+                                            filterList.remove('Petition');
+                                          });
+
                                         } else {
-                                          filterList.add('Petition');
+                                          setState(() {
+                                            filterList.add('Petition');
+                                          });
                                         }
                                       });
                                       callActionTypeFilterApi();
@@ -1374,7 +1379,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Donate',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Donate') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1402,7 +1407,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Email',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Email') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1430,7 +1435,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Call',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Call') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1439,13 +1444,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                     onChanged: (val)  {
                                       setState(()  {
                                         filterGroupValue = -1;
-
                                       });
                                       setFilterState(() {
                                         if (filterList.contains('Call')) {
-                                          filterList.remove('Call');
+                                          setState(() {
+                                            filterList.remove('Call');
+                                          });
+
                                         } else {
-                                          filterList.add('Call');
+                                          setState(() {
+                                            filterList.add('Call');
+                                          });
+
                                         }
                                       });
                                       callActionTypeFilterApi();
@@ -1457,7 +1467,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Event',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Event') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1485,7 +1495,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     title: Text(
                                       'Other',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: filterList.contains('Other') ? Colors.blue : Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -1620,7 +1630,9 @@ class _MyHomePageState extends State<MyHomePage> {
         loading = true;
         reportList = [];
       });
-      var uri = 'https://vact.tech/wp-json/wp/v2/filter_most_recent';
+      final SharedPreferences prefs = await _sprefs;
+      String userId = prefs.getInt("ID").toString();
+      var uri = 'https://vact.tech/wp-json/wp/v2/filter_most_recent?user_id=$userId';
       print('uri : ' + uri);
       var response = await post(Uri.parse(uri));
       //log('response :' + response.body);
@@ -1647,8 +1659,16 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       String actionListType = filterList.join(', ');
       print(actionListType);
-      var uri =
-          'https://vact.tech/wp-json/wp/v2/filter_action_type?action_type=$actionListType';
+      final SharedPreferences prefs = await _sprefs;
+      String userId = prefs.getInt("ID").toString();
+      var uri;
+      if(!actionListType.isEmpty){
+        uri = 'https://vact.tech/wp-json/wp/v2/filter_action_type?action_type=$actionListType&user_id=$userId';
+      }else{
+        uri =
+        'https://vact.tech/wp-json/wp/v2/get_all_user_details?user_id=$userId&page_no=$pageNo';
+      }
+
       print('uri : ' + uri);
       var response = await post(Uri.parse(uri));
       //log('response :' + response.body);

@@ -21,6 +21,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app.dart';
 import '../widgets/bottom_navigation.dart';
+import '../widgets/tab_navigator.dart';
+import 'addpage.dart';
 import 'homepage.dart';
 import 'loginpage.dart';
 
@@ -91,6 +93,14 @@ class _ProfilePageState extends State<ProfilePage> {
           .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
         return new App();
       }));
+    }else if(tabItem == CustomTabItem.add){
+      Navigator
+          .of(context)
+          .pushReplacement(MaterialPageRoute(
+        builder: (context) => new AddPage(),
+        fullscreenDialog: true,
+        maintainState: false,
+      ));
     } else if (tabItem == _currentTab) {
       // pop to first route
       _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
@@ -459,11 +469,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                             onPressed: (){
                                               if(backGroundId!=-1){
+                                                Navigator.pop(context);
                                                 setBackgroundProfile(
                                                     "",
                                                     getBackgroundImage(
                                                         backGroundId));
-                                                Navigator.pop(context);
+
                                               }
                                             },
                                           ),
@@ -774,7 +785,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     alignment: Alignment.bottomRight,
                     child: TextButton(
                       child: Text(
-                        isViewMore ? "View More" : "View Less",
+                        originalItems.length > 3 ? isViewMore ? "View More" : "View Less" : "",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 10,
@@ -836,7 +847,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Navigator.push(
           context,
           new MaterialPageRoute(
-            builder: (context) => new MyHomePage(),
+            builder: (context) => new App(),
           ),
         );
         return false;
@@ -1064,7 +1075,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 .replaceAll("[", "")
                 .replaceAll("]", "");
           }
+          items.clear();
           originalItems.clear();
+
           for (var item in data['completed_action']) {
             originalItems.add(Report(
               id: item['post_action_id'],
@@ -1141,4 +1154,5 @@ class _ProfilePageState extends State<ProfilePage> {
       throw 'Could not launch $url';
     }
   }
+
 }

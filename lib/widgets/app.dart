@@ -5,6 +5,8 @@ import 'package:ourvoice/widgets/bottom_navigation.dart';
 import 'package:ourvoice/config/tab_item.dart';
 import 'package:ourvoice/widgets/tab_navigator.dart';
 
+import '../screens/addpage.dart';
+
 class App extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AppState();
@@ -27,7 +29,16 @@ class AppState extends State<App> {
           .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
         return new ProfilePage();
       }));
-    }else if (tabItem == _currentTab) {
+    } if (tabItem == CustomTabItem.add){
+      print("add");
+      Navigator
+          .of(context)
+          .pushReplacement(MaterialPageRoute(
+        builder: (context) => new AddPage(),
+        fullscreenDialog: true,
+        maintainState: false,
+      ));
+    } else if (tabItem == _currentTab) {
       // pop to first route
       _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
     } else {

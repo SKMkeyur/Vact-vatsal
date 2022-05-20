@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:ourvoice/ip_service.dart';
 import 'package:ourvoice/screens/loginpage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ourvoice/widgets/app.dart';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'homepage_act.dart';
 
@@ -41,6 +38,13 @@ class _CheckPageState extends State<CheckPage> {
     bool login = (prefs.getBool("login") ?? false);
 
     if (login) {
+      try{
+        int userId = (prefs.getInt("ID") ?? 0);
+        if(userId != 0){
+          setUserActiveStatus(userId.toString());
+        }
+      }catch(e){}
+
       const url = 'https://api.ipify.org';
       final response = await http.get(Uri.parse(url));
       print("-----");

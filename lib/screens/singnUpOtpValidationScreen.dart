@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:ourvoice/constants/colors.dart';
 import 'package:ourvoice/screens/loginpage.dart';
 import 'package:ourvoice/widgets/submit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SingnUpOtpScreen extends StatefulWidget {
 
@@ -22,6 +23,7 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
   bool showMessage = false;
   String message = '';
   final _otp = TextEditingController();
+  SharedPreferences sharedPreferences;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +83,7 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
                 Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Text("OTP has been sent to "+widget.email,style: TextStyle(color: Color(0xFFff862e),fontWeight: FontWeight.w600),)
+                    child: Text("Code has been sent to "+widget.email,style: TextStyle(color: Color(0xFFff862e),fontWeight: FontWeight.w600),)
                 ),
                 TextFormField(
                   controller: _otp,
@@ -202,6 +204,38 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
       Map data = json.decode(response.body) as Map;
        message = data['message'] as String;
       if(data['success'] == true ){
+
+        String userId=data['user']['data']['ID'];
+        print("userId.."+userId);
+        var uri1 =
+            'https://vact.tech/wp-json/wp/v2/get_profile?user_id=$userId';
+
+        print('uri : ' + uri1);
+        var response1 = await post(Uri.parse(uri1));
+        print('response :' + response1.body);
+        Map data2 = new Map();
+        Map data3 = new Map();
+        String name = "";
+        int id = 0;
+        data2 = json.decode(response1.body) as Map;
+        if (data2['success'] == true) {
+          data3 = data2['data'];
+          name = data3['first_name']
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", "");
+          " " +
+              data3['last_name']
+                  .toString()
+                  .replaceAll("[", "")
+                  .replaceAll("]", "");
+          print(data3['first_name']);
+          print(name);
+         
+        }
+        print(data2);
+        await _saveProfileData(name, int.parse(userId));
+        setUserActiveStatus(userId.toString());
         Navigator.push(
           context,
           new MaterialPageRoute(
@@ -225,6 +259,17 @@ class _SingnUpOtpScreenState extends State<SingnUpOtpScreen> {
     }
   }
 
+
+  _saveProfileData(String status, int id) async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      print(id);
+      sharedPreferences.setString("name", status);
+      sharedPreferences.setInt("ID", id);
+      sharedPreferences.setBool('login', true);
+      sharedPreferences.commit();
+    });
+  }
 
 
 }

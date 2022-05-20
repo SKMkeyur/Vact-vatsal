@@ -27,6 +27,11 @@ class TabNavigator extends StatelessWidget {
               maintainState: false,
             );
             break;
+          case CustomTabItem.profile:
+            return MaterialPageRoute(
+              builder: (context) => new ProfilePage(),
+            );
+            break;
           default:
             return MaterialPageRoute(
               builder: (context) => new ProfilePage(),

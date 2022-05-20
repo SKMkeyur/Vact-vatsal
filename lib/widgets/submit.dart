@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ourvoice/screens/SelectedInterestSection.dart';
 import 'package:ourvoice/screens/loginpage.dart';
 import 'package:ourvoice/screens/signuppage.dart';
+import 'package:ourvoice/widgets/app.dart';
 
 class SubmitScreen extends StatefulWidget {
   const SubmitScreen({Key key}) : super(key: key);
@@ -21,7 +22,7 @@ class _SubmitScreenState extends State<SubmitScreen> {
       Navigator.push(
         context,
         new MaterialPageRoute(
-          builder: (context) => new LoginPage(),
+          builder: (context) => new App(),
         ),
       );
     });

@@ -383,7 +383,7 @@ class _SelectInterestSelectionState extends State<SelectInterestSelection> {
           content: const Text('Choose at least one topic that makes your heart race!'),
           actions: <Widget>[
             FlatButton(
-              child: Text('Ok', style: TextStyle(color: Color(0xff042e4d))),
+              child: Text('Okay!', style: TextStyle(color: Color(0xff042e4d))),
               onPressed: () {
                 Navigator.of(context).pop();
               },
